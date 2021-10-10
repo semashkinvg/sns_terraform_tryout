@@ -19,12 +19,14 @@ data "aws_iam_policy_document" "sqs_policy_main" {
 }
 
 resource "aws_sqs_queue" "sqs_example" {
-  name       = "${var.project}-example-queue"
+  name       = "${var.project}-example-queue${var.fifo ? ".fifo" : ""}"
+  fifo_queue = var.fifo
   # this is why messsages sent to the dead letter queue
-#   policy = data.aws_iam_policy_document.sqs_policy_main.json
+  policy = data.aws_iam_policy_document.sqs_policy_main.json
 }
 
 resource "aws_sqs_queue" "sqs_example_deadletter" {
-  name       = "${var.project}-example-queue_deadletter"
+  name       = "${var.project}-example-queue_deadletter${var.fifo ? ".fifo" : ""}"
   policy = data.aws_iam_policy_document.sqs_policy_main.json
+  fifo_queue = var.fifo
 }
